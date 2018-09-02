@@ -20,7 +20,7 @@ class testLinkedList(unittest.TestCase):
         for val in vals[1:]:
             l.append(val)
 
-        self.assertEqual( l.is_palindrome(), False )
+        self.assertEqual( l.is_palindrome_runner(), False )
         return
 
     def testPalin_two(self): # even palindrome
@@ -28,7 +28,7 @@ class testLinkedList(unittest.TestCase):
         l = LinkedNode(vals[0])
         for val in vals[1:]:
             l.append(val)
-        self.assertEqual( l.is_palindrome(), True )
+        self.assertEqual( l.is_palindrome_runner(), True )
         return
 
     def test_odd_palindrome(self):
@@ -36,7 +36,7 @@ class testLinkedList(unittest.TestCase):
         l = LinkedNode(vals[0])
         for val in vals[1:]:
             l.append(val)
-        self.assertEqual( l.is_palindrome(), True )
+        self.assertEqual( l.is_palindrome_runner(), True )
         return
 
 
@@ -104,6 +104,33 @@ class LinkedNode():
                 return False
             curr = curr.next
         return True
+    
+    # return half of this linked list. If the list is odd, return the floor of half of this linked list.
+    def halve_list(self):
+        half = []
+        counter = self
+        cleaner = self
+        while counter is not None:
+            half.append(cleaner.value)
+            cleaner = cleaner.next # be careful here.
+            
+            counter = counter.next
+            if counter is None: # odd number of els in the linked list
+                half = half[:-1]
+                break
+            counter = counter.next
+        return half, cleaner
+
+    # check if this linked list is a palindrome, using 'runner' approach to get only half.
+    def is_palindrome_runner(self):
+        l, curr = self.halve_list()
+        for i in range(len(l)):
+            reverse = l.pop()
+            if reverse != curr.value:
+                return False
+            curr = curr.next
+        return True
+
 
 if __name__ == '__main__':
     unittest.main()
