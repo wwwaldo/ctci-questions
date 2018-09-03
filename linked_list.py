@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+# all the linked list questions, and also an implementation
+# move these out sometime later..
+
 import unittest
 
 class testLinkedList(unittest.TestCase):
@@ -39,6 +42,35 @@ class testLinkedList(unittest.TestCase):
         self.assertEqual( l.is_palindrome_runner(), True )
         return
 
+    def test_delete_interior(self):
+        vals = 'abcdcba'
+        l = LinkedNode(vals[0])
+        for val in vals[1:]:
+            l.append(val)
+
+        test = l.next.next.next
+        self.assertEqual( test.value, 'd' ) # sanity checking
+        
+        l.delete_interior(test)
+        self.assertEqual("[a, b, c, c, b, a]", str(l) )
+
+    def test_delete_duplicates(self):
+        vals = 'ada'
+        l = LinkedNode(vals[0])
+        for val in vals[1:]:
+            l.append(val)
+        l.delete_duplicates()
+
+        self.assertEqual("[a, d]", str(l) )
+
+    def test_delete_duplicates_long(self):
+        vals = 'abbb'
+        l = LinkedNode(vals[0])
+        for val in vals[1:]:
+            l.append(val)
+        l.delete_duplicates()
+
+        self.assertEqual("[a, b]", str(l) )
 
 class LinkedNode():
     ''' A linked list implementation with a slightly annoying api'''
@@ -131,6 +163,36 @@ class LinkedNode():
             curr = curr.next
         return True
 
+    # even more methods
+    def delete_interior(self, node):
+        # not allowed to access head of linked list(!)
+        
+        if node.next is None:
+            print("Oops, tried to delete non-internal node")
+            return
+        node.value = node.next.value # har har har
+        node.next = node.next.next
+        return
+    
+    # remove the duplicates from the linked list using a temporary buffer.
+    def delete_duplicates(self):
+        buf = set()
+        buf.add(self.value) # add the first value by default.
+        curr = self.next
+        prev = self
+       
+        while curr is not None:
+            if curr.value in buf:
+                prev.next = curr.next
+            
+            else:
+                buf.add(curr.value)
+                prev = prev.next # !! only do this if we didn't delete the node.
+            
+            curr = curr.next
+
+
+        return
 
 if __name__ == '__main__':
     unittest.main()
